@@ -1,4 +1,4 @@
-COURSE = 
+COURSE =
 
 .PHONY: all clean
 
@@ -16,3 +16,15 @@ structure:	## Generate directories structure
 	@[ -z "$(PROJECT_GROUP)" ] || config/script/project-group {$(PROJECT_GROUP)}
 	@touch structure
 
+FILES = $(patsubst %.md, %.docx, $(wildcard *.md))
+FILES += $(patsubst %.md, %.pdf, $(wildcard *.md))
+LATEX_FORMAT = FILTER = --filter pandoc-crossref
+%.docx: %.md
+	-atom "$<" $(FILTER) -o "$@"
+%.pdf: %.md
+	-atom "$<" $(LATEX_FORMAT) $(FILTER) -o "$@"
+all: $(FILES)
+	@echo $(FILES)
+
+clean:
+	-rm $(FILES) *~
